@@ -1,0 +1,101 @@
+-- Define key bindings
+local time_stop_unit = 'Satoru Gojou [Summer]'
+local Key_UpgradeAll = Enum.KeyCode.RightControl
+local Key_LightYagami = Enum.KeyCode.F1
+local Key_TimeStop = Enum.KeyCode.LeftControl -- hold + M1
+local Key_TimeStopDio = Enum.KeyCode.LeftAlt -- hold + M1
+local Dio= "DIO OH"
+-- Wait for game to load
+repeat wait(2) until game.Loaded
+wait()
+
+-- Check if the player is in the correct game and create local variables
+local me = game.Players.LocalPlayer
+local mouse = me:GetMouse()
+local remote = game.ReplicatedStorage.Remotes.Input
+local remote2 = game.ReplicatedStorage.Remotes.Server
+
+local timestop 
+local timestop2
+print("exec")
+-- Listen for the creation of the time stop unit
+game:GetService("Workspace").Unit.ChildAdded:Connect(function(x)
+    wait(0.1)
+    if x.Name == Dio and x.Owner.Value == me then
+        timestop = x
+    end
+end)
+game:GetService("Workspace").Unit.ChildAdded:Connect(function(x)
+    wait(0.1)
+    if x.Name == time_stop_unit and x.Owner.Value == me then
+        timestop = x
+    end
+end)
+
+--Listen for key presses
+game:GetService("UserInputService").InputBegan:Connect(function(input)
+    if input.KeyCode == Key_UpgradeAll then
+        -- Upgrade all units that are owned by the player and have not reached max upgrades
+        for _,v in pairs(game:GetService("Workspace").Unit:GetChildren()) do
+            if v.Owner.Value == me and v.UpgradeTag.Value ~= v.MaxUpgradeTag.Value and me.Money.Value > 190 then
+                for i = 1, 6 do
+                    remote2:InvokeServer('Upgrade', v)
+                    wait(0.2)
+                    if v.UpgradeTag.Value == v.MaxUpgradeTag.Value then break end
+                end
+            end
+        end
+    elseif input.KeyCode == Key_LightYagami then
+        -- Use Light Yagami's special move if available
+        for _,v in pairs(game:GetService("Workspace").Unit:GetChildren()) do
+            if v.Name == 'light (shinigami)' and v.Owner.Value == me and v.SpecialMove.Special_Enabled2.Value == false then
+                remote:FireServer('UseSpecialMove', v,"Text Here")
+                break
+            end
+        end
+    end
+end)
+
+-- Listen for mouse clicks
+mouse.Button1Down:connect(function()
+    -- Use time stop if the appropriate key combination is pressed
+    if game:GetService("UserInputService"):IsKeyDown(Key_TimeStop) then
+        print("beo1",timestop)
+        remote:FireServer('Summon', {
+            ["Rotation"] = 0,
+            ["cframe"] = CFrame.new(mouse.hit.p),
+            ["Unit"] = time_stop_unit
+        })
+        wait(0.5)
+
+        repeat
+            remote2:InvokeServer('Upgrade', timestop)
+            wait(0.1)
+        until timestop.UpgradeTag.Value == timestop.MaxUpgradeTag.Value
+
+        remote:FireServer('UseSpecialMove', timestop,"Text Here")
+        wait(2)
+        remote:FireServer('Sell', timestop)
+    end
+end)
+mouse.Button1Down:connect(function()
+    -- Use time stop if the appropriate key combination is pressed
+    if game:GetService("UserInputService"):IsKeyDown(Key_TimeStopDio) then
+        print("beo1",timestop)
+        remote:FireServer('Summon', {
+            ["Rotation"] = 0,
+            ["cframe"] = CFrame.new(mouse.hit.p),
+            ["Unit"] = Dio
+        })
+        wait(0.3)
+
+        repeat
+            remote2:InvokeServer('Upgrade', timestop)
+            wait(0.01)
+        until timestop.UpgradeTag.Value == timestop.MaxUpgradeTag.Value
+
+        remote:FireServer('UseSpecialMove', timestop,"Text Here")
+        --wait(2)
+        --remote:FireServer('Sell', timestop)
+    end
+end)
