@@ -1,0 +1,105 @@
+repeat wait() until game.Loaded
+wait()
+
+
+local function speedchange(a)
+	
+
+	local args = {
+		[1] = "SpeedChange",
+		[2] = a
+	}
+
+	game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Input"):FireServer(unpack(args))
+	wait(1)
+end
+local me = game.Players.LocalPlayer
+local counttemp =0
+local counttemp1 =0
+local counttemp2 =0
+local counttemp3 =0
+print("exec")
+
+wait(60)
+
+while wait(1) do
+	if counttemp ==8 then
+		print("enough 8 bb ")
+		break
+	else
+		print("not enough 8 bb ")
+		for i,v in pairs(game:GetService("Workspace").Unit:GetChildren())do
+			if v.Owner.Value == me and v.UpgradeTag.Value == v.MaxUpgradeTag.Value and v.Name == "WanoBlackbeard" then
+				counttemp = counttemp+1
+			end
+		end
+	end
+	if counttemp ==8 then
+		print("passed 8")
+	else
+		counttemp= 0
+	end	
+end
+
+
+
+while wait(1) do
+	if counttemp2 ==4 then
+		print("enough 4 kisuke ")
+		break
+	else
+		print("not enough 4 kisuke ")
+		for i,v in pairs(game:GetService("Workspace").Unit:GetChildren())do
+			if v.Owner.Value == me and v.UpgradeTag.Value == v.MaxUpgradeTag.Value and v.Name == "Kisuke6" then
+				counttemp2 = counttemp2+1
+			end
+		end
+	end
+	if counttemp2 ==4 then
+		print("passed 4")
+	else
+		counttemp2= 0
+	end	
+end
+
+while wait(1) do
+	if counttemp1 ==1 then
+		print("enough rimuru")
+
+		break
+	else
+		print("not enough rimuru")
+		for i,v in pairs(game:GetService("Workspace").Unit:GetChildren())do
+			if v.Owner.Value == me and v.UpgradeTag.Value == v.MaxUpgradeTag.Value and v.Name == "Rimuru Tempest" and v.SpecialMove.Special_Enabled2.Value == true then
+				counttemp1 = counttemp1+1
+			end
+		end
+	end
+	if counttemp1 ==1 then
+		print("passed 1")
+	else
+		counttemp1= 0
+	end	
+end
+
+while wait(1) do
+	if counttemp3 ==3 then
+		print("enough kira")
+		speedchange(false)
+		speedchange(true)
+		speedchange(true)
+		break
+	else
+		print("not enough kira")
+		for i,v in pairs(game:GetService("Workspace").Unit:GetChildren())do
+			if v.Owner.Value == me and v.UpgradeTag.Value == v.MaxUpgradeTag.Value and v.Name == "Light Yagami (Darkness)" and v.SpecialMove.Special_Enabled2.Value == true then
+				counttemp3 = counttemp3+1
+			end
+		end
+	end
+	if counttemp3 ==3 then
+		print("passed 3")
+	else
+		counttemp3= 0
+	end	
+end
